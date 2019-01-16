@@ -113,6 +113,6 @@ find / -type f -newer tmp1.txt -a ! -newer tmp2.txt</code></pre>
 <p>如果要忽略多个目录，不要用通配符，而应该多次写path。
 </p>
 <pre><code>find /var/run \( -path '/var/run/mysqld' -o -path '/var/run/httpd' \) -prune -false -o -type f -name "*.pid"</code></pre>
-<p>这里的<code>-path DIR -prune -false -o</code>是忽略目录时的固定格式。至于为什么如此，参见我的find篇文章：<a href="https://www.cnblogs.com/f-ck-need-u/p/6995529.html#huluemulu">find详解</a>
+<p>这里的<code>-path DIR -prune -false -o</code>是忽略目录时的固定格式。至于为什么如此
 </p>
 </body></html>
