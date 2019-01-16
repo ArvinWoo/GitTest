@@ -1,0 +1,118 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title></title>
+<style id="system" type="text/css">*{margin:0;padding:0;}body {	font:13.34px helvetica,arial,freesans,clean,sans-serif;	color:black;	line-height:1.4em;	background-color: #F8F8F8;	padding: 0.7em;}p {	margin:1em 0;	line-height:1.5em;}table {	font-size:inherit;	font:100%;	margin:1em;}table th{border-bottom:1px solid #bbb;padding:.2em 1em;}table td{border-bottom:1px solid #ddd;padding:.2em 1em;}input[type=text],input[type=password],input[type=image],textarea{font:99% helvetica,arial,freesans,sans-serif;}select,option{padding:0 .25em;}optgroup{margin-top:.5em;}pre,code{font:12px Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;}pre {	margin:1em 0;	font-size:12px;	background-color:#eee;	border:1px solid #ddd;	padding:5px;	line-height:1.5em;	color:#444;	overflow:auto;	-webkit-box-shadow:rgba(0,0,0,0.07) 0 1px 2px inset;	-webkit-border-radius:3px;	-moz-border-radius:3px;border-radius:3px;white-space: pre-wrap;word-wrap:break-word;}pre code {	padding:0;	font-size:12px;	background-color:#eee;	border:none;}code {	font-size:12px;	background-color:#f8f8ff;	color:#444;	padding:0 .2em;	border:1px solid #dedede;}img{border:0;max-width:100%;}abbr{border-bottom:none;}a{color:#4183c4;text-decoration:none;}a:hover{text-decoration:underline;}a code,a:link code,a:visited code{color:#4183c4;}h2,h3{margin:1em 0;}h1,h2,h3,h4,h5,h6{border:0;}h1{font-size:170%;border-top:4px solid #aaa;padding-top:.5em;margin-top:1.5em;}h1:first-child{margin-top:0;padding-top:.25em;border-top:none;}h2{font-size:150%;margin-top:1.5em;border-top:4px solid #e0e0e0;padding-top:.5em;}h3{margin-top:1em;}hr{border:1px solid #ddd;}ul{margin:1em 0 1em 2em;}ol{margin:1em 0 1em 2em;}ul li,ol li{margin-top:.5em;margin-bottom:.5em;}ul ul,ul ol,ol ol,ol ul{margin-top:0;margin-bottom:0;}blockquote{margin:1em 0;border-left:5px solid #ddd;padding-left:.6em;color:#555;}dt{font-weight:bold;margin-left:1em;}dd{margin-left:2em;margin-bottom:1em;}@media screen and (min-width: 768px) {    body {        width: 748px;        margin:10px auto;    }}</style><style id="custom" type="text/css"></style></head>
+<body marginheight="0"><h1>1.find语法</h1>
+<p>find常用搜索选项，会递归搜索。find的格式：
+</p>
+<pre><code>find [path] [options] [test_expr] [action]
+
+常用options：
+    -maxdepth levels：最大搜索层次，层次从1开始计算
+    -mindepth levels：
+
+常用action：
+    -delete
+    -exec command ;
+    -ls
+    -prune
+    -print：这是默认的action
+    -print0
+    不建议在find中使用除了"-print"、"-print0"和"-prune"外其他的action，因为不安全，如有需要，可配合xargs命令来实现目的
+
+常用test_expr：
+【文件类型搜索】
+    -type：
+        d：目录
+        f：普通文件
+        l：符号链接文件，即软链接文件
+【文件大小搜索】
+    -size N：b(512字节,默认单位),c(1字节),w(2字节),k(1024字节),M(1024k),G(1024M)
+         +N：例如，+10M，表示大于10M的文件
+          N：例如，10M，表示正好为10M的文件
+         -N：例如,-10M，表示小于10M的文件
+    -empty：空文件，对于目录来说，则是空目录
+【文件名、路径搜索】
+    -name：对basename进行匹配
+    -iname：
+    -path：对dirname+basename进行匹配，所以不能匹配尾随斜线
+    -ipath：
+    -regex：对dirname+basename匹配，且允许尾随斜线
+    -iregex：
+【文件所有者、组搜索】
+    -gid n      ：
+    -group gname：
+    -uid n      ：
+    -user uname ：
+【文件权限搜索】
+    -perm mode：精确匹配权限。"-perm g=w"将只匹配权限为0020的文件。当然，也可以写成三位数字的权限模式
+    -perm -mode：权限包含匹配。例如给定的权限"-0766"，则只能匹配"N767"、"N777"和"N776"这几种权限的文件，
+               ：如果使用字符模式的权限，则必须指定u/g/o/a，例如"-perm -u+x,a+r"，
+               ：表示至少所有人都有读权限，且所有者有执行权限的文件
+    -perm /mode：权限挑选匹配。例如"-perm /640"可以匹配出600，040,700,740等等
+    -executable：具有可执行权限的文件。它会忽略-perm的测试
+    -readable  ：具有可读权限的文件。它会忽略-perm的测试
+    -writable  ：具有可写权限的文件。它会忽略-perm的测试
+【文件时间戳搜索】
+    -newer file：比给定文件的mtime更接近现在的文件
+    -anewer    ：atime
+    -cnewer    ：ctime
+    -newer[acm]t TIME：atime/ctime/mtime比时间戳TIME更新的文件
+    -atime N   ：文件的atime在24*N小时内改变过。N可以是N,+N,-N
+    -ctime N   ：ctime
+    -mtime N   ：mtime
+【其它搜索】
+    -samefile FILE：找出和FILE互为硬链接的文件</code></pre>
+<h1>2.find使用示例</h1>
+<p>几个find示例：
+
+</p>
+<p>1.搜索/test下foobar开头的普通文件
+</p>
+<pre><code>find /test -type f -name "foobar*"</code></pre>
+<p>2.结合路径名搜索，搜索所有目录以bin结尾的sh脚本文件
+</p>
+<pre><code>find / -type f -path "*bin/*.sh"</code></pre>
+<p>3.搜索/etc下3天内修改过conf文件，因为是文件内容，所以不考虑搜索目录
+</p>
+<pre><code>find /etc -type f -mtime -3</code></pre>
+<p>4.搜索大于3M的文件。可忽略目录的搜索
+</p>
+<pre><code>find / -type f -size +3M</code></pre>
+<p>5.搜索空文件或空目录
+</p>
+<pre><code>find / -type f -empty
+find / -type d -empty</code></pre>
+<p>6.搜索/test下具有执行权限的文件
+</p>
+<pre><code>find /test -type f -perm -a+x
+find /test -type f -perm -executable</code></pre>
+<p>7.搜索/test下3天前修改的文件
+</p>
+<pre><code>find /test -type f -mtime +3</code></pre>
+<p>8.搜索/test下2017-06-03到2017-06-06之间修改过的文件
+</p>
+<pre><code>find / -type f -newermt 2017-06-03 -a ! -newermt 2017-06-06</code></pre>
+<p>或者，创建两个临时文件，并用touch修改这两个文件的修改时间，然后<code>find -newer</code>去参照这两个文件
+</p>
+<pre><code>touch -m -d 2017-06-03 tmp1.txt
+touch -m -d 2017-06-06 tmp2.txt
+find / -type f -newer tmp1.txt -a ! -newer tmp2.txt</code></pre>
+<p>不过这样会把tmp2.txt也搜索出来，因为newer搜索的是比xxx文件更新，取反则表示更旧或时间相同。
+
+</p>
+<p>9.不要递归搜索，通过<code>-maxdepth 1</code>实现
+</p>
+<pre><code>find /etc -maxdepth 1 -type f -name "*.conf"</code></pre>
+<p>10.搜索时忽略某个目录。
+
+</p>
+<p>例如搜索/var/run下的pid文件，但忽略/var/run/mysqld目录
+</p>
+<pre><code>find /var/run -path '/var/run/mysqld' -prune -false -o -type f -name "*.pid"</code></pre>
+<p>如果要忽略多个目录，不要用通配符，而应该多次写path。
+</p>
+<pre><code>find /var/run \( -path '/var/run/mysqld' -o -path '/var/run/httpd' \) -prune -false -o -type f -name "*.pid"</code></pre>
+<p>这里的<code>-path DIR -prune -false -o</code>是忽略目录时的固定格式。至于为什么如此，参见我的find篇文章：<a href="https://www.cnblogs.com/f-ck-need-u/p/6995529.html#huluemulu">find详解</a>
+</p>
+</body></html>
